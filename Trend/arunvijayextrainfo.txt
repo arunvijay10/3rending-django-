@@ -1,0 +1,114 @@
+first i have created a media folder in app section where all images will be uploaded
+
+i have added this down link under the static url
+MEDIA_URL = '/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+
+
+
+
+after adding i have written some code under the url link
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path("",include("TrendApp.urls")),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+last +static code i have added at the end
+
+
+
+we have to import some files in url also to run the upper code
+from django.conf.urls.static import static
+from django.conf import settings
+
+
+i have also changed the templates because it will automatically see all the templates and we don't have to write
+again and again
+ [os.path.join(BASE_DIR,'templates')]
+
+
+
+ to include a html file we will use
+ {% include and file name %} ex {% include 'navbar.html'%} no commas will be used in navbar
+
+
+ we have to show title
+ def Trending(request):
+    images =Image.objects.all()
+    data = {"images":images}
+    return render(request,"3rend.html",data)
+
+
+    #images we have created a variable
+    data is also a variable
+
+    then we have to write for loop in html
+     {% for i in images %}
+            <h1>{{ i.title }}</h1>
+    {% endfor %}
+
+
+
+
+
+
+created  a card and done some changes in the tags
+
+     <div class="card-columns">
+<!--         #i have added from bootsrap and this is for cards-->
+         {% for i in images %}
+
+<!--coying the text from boostrap-->
+
+         <div class="card" >
+  <img src='/media/{{i.images}}' class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{i.title}}</h5>
+    <p class="card-text">{{i.description }}</p>
+    <a href="#" class="btn btn-primary">Check</a>
+  </div>
+</div>
+
+
+
+1.look at the for loop down
+2.
+
+  <!--      cateogries -->
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active">
+                3rending World Wide
+            </a>
+
+            {% for c in cat%}
+            <a href="/category/{{c.pk}}" class="list-group-item list-group-item-action">{{c.title}}</a>
+            {% endfor %}
+
+        </div>
+    </div>
+
+
+
+
+
+veryyyyyy very important code that we have to add in view and more over we have to
+change the url with cateogry other name will not show the search result
+
+def ArrangeCategory(request,cid):
+    cat = Categories.objects.all()
+    category= Categories.objects.get(pk=cid)
+    images = Image.objects.filter(cat=category)
+    data = {"images": images, 'cat': cat}
+    return render(request, "3rend.html", data)
+
+last added path check u have to write the same
+
+urlpatterns = [
+                  path('admin/', admin.site.urls),
+                  path("", include("TrendApp.urls")),
+                  path("3rend/", Trending),
+                  path("category/<int:cid>/", ArrangeCategory),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
